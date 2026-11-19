@@ -142,7 +142,7 @@ jobs:
 
   binaries:
     needs: setup
-    runs-on: ${{ needs.setup.outputs.runs-on }}
+    runs-on: ${{ (needs.setup.outputs.runs-on == 'ubuntu-latest' && 'ubuntu-latest') || 'blacksmith-4vcpu-ubuntu-2404' }}
     timeout-minutes: 30 # the longest successful run seen was 6 minutes
     permissions:
       contents: write
@@ -235,7 +235,7 @@ jobs:
 
   images:
     needs: setup
-    runs-on: ${{ needs.setup.outputs.runs-on }}
+    runs-on: ${{ (needs.setup.outputs.runs-on == 'ubuntu-latest' && 'ubuntu-latest') || 'blacksmith-4vcpu-ubuntu-2404' }}
     timeout-minutes: 45 # the longest successful run seen was 8 minutes
     permissions:
       contents: read
@@ -415,7 +415,7 @@ jobs:
   runner-images:
     name: Runner image (${{ matrix.tag }}, ${{ matrix.arch }})
     needs: setup
-    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || needs.setup.outputs.runs-on }}
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || (needs.setup.outputs.runs-on == 'ubuntu-latest' && 'ubuntu-latest') || 'blacksmith-4vcpu-ubuntu-2404' }}
     timeout-minutes: 60 # the longest successful run seen was 22 minutes
     permissions:
       contents: read
@@ -686,7 +686,7 @@ jobs:
     name: Runner image manifests
     needs: [setup, runner-images]
     if: ${{ !cancelled() && needs.setup.result == 'success' }}
-    runs-on: ${{ needs.setup.outputs.runs-on }}
+    runs-on: ${{ (needs.setup.outputs.runs-on == 'ubuntu-latest' && 'ubuntu-latest') || 'blacksmith-4vcpu-ubuntu-2404' }}
     timeout-minutes: 15 # the longest successful run seen was 1 minute
     permissions:
       contents: read
